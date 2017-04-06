@@ -1,19 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-
-declare var util : any;
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
-  title = 'app works!';
+export class AppComponent implements OnInit, OnDestroy {
+
+  constructor () { }
 
   ngOnInit(){
-    
-    if (util.supports.data && util.supports.audioVideo) {
-      console.log("browser is ok");
-    }
+    // checking browser support for webrtc
+    console.log("app started");
   }
+
+  ngOnDestroy(){
+    console.log("appcomp destroyed");
+  }
+
 }

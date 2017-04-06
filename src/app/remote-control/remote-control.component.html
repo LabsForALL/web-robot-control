@@ -1,0 +1,10 @@
+<div class="loader" *ngIf="isLoading">
+  Loading
+</div>
+
+<div class='conn-panel' *ngIf="!isLoading">
+
+  Connection panel
+  <button (click)="onDisconnect()"> Disconnect </button>
+
+</div>
