@@ -1,3 +1,2 @@
-<p>
-  control-panel works!
-</p>
+<div class="loading" *ngIf="isConnecting" > connecting to {{remotePeerID}} </div>
+<div class="control-panel" *ngIf="!isConnecting" > Welcome to control panel </div>

@@ -13,6 +13,7 @@ export class RemoteControlComponent implements OnInit, OnDestroy, IPeerServiceOb
 
   isLoading: boolean = true;
   username : any = "";
+  keepServiceConnected: boolean = false;
 
 
   constructor(
@@ -23,10 +24,21 @@ export class RemoteControlComponent implements OnInit, OnDestroy, IPeerServiceOb
 
 
   ngOnInit() {
-    console.log("Remote control component created");
-    //Basically taking the username from the route params and trying to connect
-    let usrname = this.route.snapshot.params['usrname'];
-    this.peerService.tryToConnect(usrname,this);
+
+    this.peerService.setServiceObserver(this);
+
+    if(this.peerService.isDisconnected()){
+      //Basically taking the username from the route params and trying to connect
+      let usrname = this.route.snapshot.params['usrname'];
+      //connecting and setting up the observer 
+      this.peerService.tryToConnect(usrname);
+      console.log("Remote control component created");
+    }else{
+      this.isLoading = false;
+      this.username = this.peerService.getLocalUsername();
+      console.log("Remote control component recreated");
+    }
+
   }
 
 
@@ -34,10 +46,11 @@ export class RemoteControlComponent implements OnInit, OnDestroy, IPeerServiceOb
     //Showing the connection panel
     this.isLoading = false;
     this.username = regname;
+    console.log("Registration completed");
   }
 
 
-  onPeerServiceDisconnect() {
+  onPeerServiceDisconnected() {
     console.log("peer service disconnected");
   }
 
@@ -48,84 +61,41 @@ export class RemoteControlComponent implements OnInit, OnDestroy, IPeerServiceOb
 
 
   onPeerServiceError(errMsg: String) {
-    switch (errMsg) {
-      case 'browser-incompatible':
-          alert("Please use better browser");
-          break;
-      case 'disconnected':
-          alert("Disconnected from the server");
-          break;
-      case 'invalid-id':
-          alert("Invalid ID, try new one");
-          break;
-      case 'invalid-key':
-          alert("Invalid key, get another one");
-          break;
-      case 'network':
-          alert("Network problem occurred, check your connection");
-          break;
-      case 'peer-unavailable':
-          alert("Peer is unavailable");
-          break;
-      case 'ssl-unavailable':
-          alert("SSL is unavailable");
-          break;
-      case 'server-error':
-          alert("Server error occurred");
-          break;
-      case 'socket-error':
-          alert("Socket error occurred");
-          break;
-      case 'socket-closed':
-          alert("Socket was closed");
-          break;
-      case 'unavailable-id':
-          alert("This id was taken");
-          break;
-      case 'webrtc':
-          alert("RTC internal error occurred");
-          break;
-    }
+    /*Almost all errors are critical so we have 
+    to clean and back to the login component */
+    if(errMsg.length>0) alert(errMsg);
+    this.router.navigate(['/login']);
   }
 
 
+  onDisconnect(){
+    this.router.navigate(['/login']);
+  }
 
   onStartRTC(remoteUsr){
 
     //TODO: add validation
-
     if (!(util.supports.data && util.supports.audioVideo)) {
       alert("support webrtc!")
       return;
     }
 
     console.log("starting remote connection");
-    this.peerService.connectToRemotePeer(remoteUsr);
-    //connect to remoteUsr
+    this.keepServiceConnected = true;
     this.router.navigate(['remote-control/control-panel', remoteUsr]);
-  }
-
-  onOpen() {
-    throw new Error('Method not implemented.');
-  }
-  onClosed() {
-    throw new Error('Method not implemented.');
-  }
-  onError(errMsg: String) {
-    throw new Error('Method not implemented.');
-  }
-
-  onDisconnect(errMsg? : any){
-    if(errMsg) alert(errMsg);
-    this.peerService.destroyLocalPeer();
-    this.router.navigate(['/login']);
   }
 
 
   ngOnDestroy(){
-    console.log("Remote control component destroyed");
-    this.peerService.destroyLocalPeer();
+    if(this.keepServiceConnected){
+      //only remove the service observer
+      this.peerService.removeServiceObserver();
+      console.log("Remote control component destroyed with keeping the connection");
+    }else{
+      //closes the connection and removes the observer
+      this.peerService.terminate();
+      console.log("Remote control component destroyed wothout keeping the connection");
+    }
   }
-
 
 }
