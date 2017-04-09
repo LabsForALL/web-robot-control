@@ -4,15 +4,18 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AlertModule } from 'ng2-bootstrap';
 import { RouterModule, Routes } from '@angular/router';
+import { PeerService } from './services/peer.service';
 
 import { AppComponent } from './app.component';
 import { RemoteControlComponent } from './remote-control/remote-control.component';
 import { LoginComponent } from './login/login.component';
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component'
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { ControlPanelComponent } from './remote-control/control-panel/control-panel.component'
 
 const appRoutes: Routes = [
-  { path: 'login', component: LoginComponent },
+  { path: 'remote-control/control-panel/:remote-id', component: ControlPanelComponent },
   { path: 'remote-control/:usrname', component: RemoteControlComponent },
+  { path: 'login', component: LoginComponent },
   { path: '',   redirectTo: '/login', pathMatch: 'full' },
   { path: '**', component: PageNotFoundComponent }
 ];
@@ -23,7 +26,8 @@ const appRoutes: Routes = [
     AppComponent,
     RemoteControlComponent,
     LoginComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    ControlPanelComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +36,7 @@ const appRoutes: Routes = [
     AlertModule.forRoot(),
     RouterModule.forRoot(appRoutes)
   ],
-  providers: [],
+  providers: [PeerService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

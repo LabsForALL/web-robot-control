@@ -2,9 +2,15 @@
   Loading
 </div>
 
-<div class='conn-panel' *ngIf="!isLoading">
+<form class="form-rtc rounded" *ngIf="!isLoading">
 
-  Connection panel
-  <button (click)="onDisconnect()"> Disconnect </button>
+    <div class="form-group">
+      <p id="usrName"> Welcome, {{username}} !</p>
+      <label for="in-sysname">Remote name:</label>
+      <input class="form-control" id="in-sysname" placeholder="......" type="text" autofocus #input>
+    </div>
 
-</div>
+    <button id="btnStart" class="btn btn-lg btn-primary btn-block" (click)="onStartRTC(input.value)">Start</button>
+    <button id="btnDisconnect" class="btn btn-lg btn-primary btn-block" (click)="onDisconnect()"> Disconnect </button>
+    
+</form>
