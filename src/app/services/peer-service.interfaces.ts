@@ -1,19 +1,19 @@
-export interface IPeerServiceObserver{
-    onPeerServiceOpen(regname : String);
+export interface IPeerServiceListener {
+    onPeerServiceOpen(regName: String);
     onPeerServiceDisconnected();
     onPeerServiceClosed();
-    onPeerServiceError(errMsg:String);
+    onPeerServiceError(errMsg: String);
 }
 
-export interface IPeerDataConnectionObserver{
+export interface IPeerDataConnectionListener {
     onPeerDataConnectionOpen();
-    onPeerDataConnectionData(data:any);
+    onPeerDataConnectionData(data: any);
     onPeerDataConnectionClose();
-    onPeerDataConnectionError(err:any);
+    onPeerDataConnectionError(err: any);
 }
 
-export interface IPeerMediaConnectionObserver{
-    onPeerMediaConnectionOpen(stream:any);
+export interface IPeerMediaConnectionListener {
+    onPeerMediaConnectionOpen(stream: any);
     onPeerMediaConnectionClosed();
-    onPeerMediaConnectionError(err:any);
+    onPeerMediaConnectionError(err: any);
 }

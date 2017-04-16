@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { PeerService } from '../../services/peer.service';
-import { IPeerServiceObserver, IPeerDataConnectionObserver, IPeerMediaConnectionObserver } from '../../services/peer-service.interfaces'
+import { IPeerServiceListener, IPeerDataConnectionListener,
+  IPeerMediaConnectionListener } from '../../services/peer-service.interfaces';
 
 @Component({
   selector: 'app-control-panel',
@@ -9,42 +10,50 @@ import { IPeerServiceObserver, IPeerDataConnectionObserver, IPeerMediaConnection
   styleUrls: ['./control-panel.component.scss']
 })
 export class ControlPanelComponent implements OnInit, OnDestroy,
- IPeerServiceObserver, IPeerDataConnectionObserver, IPeerMediaConnectionObserver {
+ IPeerServiceListener, IPeerDataConnectionListener, IPeerMediaConnectionListener {
 
-  remotePeerID: any = "";
-  isConnecting: boolean = true;
+  remotePeerID: any = '';
+  isConnecting: boolean;
 
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private peerService : PeerService
+    private peerService: PeerService
   ) { }
 
 
   ngOnInit() {
+    // taking the peer id
     this.remotePeerID = this.route.snapshot.params['remote-id'];
-    this.peerService.setServiceObserver(this);
-    this.peerService.setDataConnectionObserver(this);
+
+    // setting up the listeners
+    this.peerService.setServiceListener(this);
+    this.peerService.setDataConnectionListener(this);
+    this.peerService.setMediaConnectionListener(this);
+
+    // starting connections
     this.peerService.startDataConnection(this.remotePeerID);
-    console.log("connecting to : " + this.remotePeerID);
+    this.peerService.startMediaConnection(this.remotePeerID);
+
+    console.log('connecting to : ' + this.remotePeerID);
   }
 
 
-  /* Peer service callbacks */
+  /** Peer service callbacks */
 
-  onPeerServiceOpen(regname: String) {
+  onPeerServiceOpen(regName: String) {
     // the service usually is already open
   }
 
 
   onPeerServiceDisconnected() {
-    
+
   }
 
 
   onPeerServiceClosed() {
-    
+
   }
 
 
@@ -54,11 +63,11 @@ export class ControlPanelComponent implements OnInit, OnDestroy,
   }
 
 
-  /* Data connection callbacks */
+  /** Data connection callbacks */
 
   onPeerDataConnectionOpen() {
-    this.isConnecting=false;
-    console.log("data connection started");
+    this.isConnecting = false;
+    console.log('data connection started');
   }
 
 
@@ -68,7 +77,7 @@ export class ControlPanelComponent implements OnInit, OnDestroy,
 
 
   onPeerDataConnectionClose() {
-    console.log("data connection was closed");
+    console.log('data connection was closed');
   }
 
 
@@ -77,15 +86,15 @@ export class ControlPanelComponent implements OnInit, OnDestroy,
   }
 
 
-  /* Media connection callbacks */
+  /** Media connection callbacks */
 
   onPeerMediaConnectionOpen(stream: any) {
-    
+
   }
 
 
   onPeerMediaConnectionClosed() {
-    console.log("media connection was closed");
+    console.log('media connection was closed');
   }
 
 
@@ -94,9 +103,10 @@ export class ControlPanelComponent implements OnInit, OnDestroy,
   }
 
 
-  ngOnDestroy(): void { 
-    this.peerService.removeServiceObserver();
-    this.peerService.removeDataConnectionObserver();
+  ngOnDestroy(): void {
+    this.peerService.removeServiceListener();
+    this.peerService.removeDataConnectionListener();
+    this.peerService.removeMediaConnectionListener();
   }
 
 }
