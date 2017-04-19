@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Component, OnInit, OnDestroy, ChangeDetectorRef} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PeerService } from '../../services/peer.service';
 import { IPeerServiceListener, IPeerDataConnectionListener,
@@ -12,27 +12,44 @@ import { IPeerServiceListener, IPeerDataConnectionListener,
 export class ControlPanelComponent implements OnInit, OnDestroy,
  IPeerServiceListener, IPeerDataConnectionListener, IPeerMediaConnectionListener {
 
-  remotePeerID: any = '';
-  isConnecting: boolean;
+  Commands = {
+    moveForward : 'f',
+    moveBackward : 'b',
+    stopMove : 's',
+    turnLeft : 'l',
+    turnRight : 'r'
+  };
 
+  // WebRTC states
+  isServerConnected: boolean;
+  isDataConnected: boolean;
+  isMediaConnected: boolean;
+
+  mediaStream: any = undefined;
+  remotePeerID: any = '';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    public changeDetector: ChangeDetectorRef,
     private peerService: PeerService
   ) { }
 
 
   ngOnInit() {
+
+    // initial states
+    this.isServerConnected = true;
+    this.isDataConnected = false;
+    this.isMediaConnected = false;
+
     // taking the peer id
     this.remotePeerID = this.route.snapshot.params['remote-id'];
 
     // setting up the listeners
-    this.peerService.setServiceListener(this);
-    this.peerService.setDataConnectionListener(this);
-    this.peerService.setMediaConnectionListener(this);
+    this.peerService.setListener(this);
 
-    // starting connections
+    // starting connections and waiting for callbacks
     this.peerService.startDataConnection(this.remotePeerID);
     this.peerService.startMediaConnection(this.remotePeerID);
 
@@ -40,25 +57,45 @@ export class ControlPanelComponent implements OnInit, OnDestroy,
   }
 
 
+  /** Buttons callbacks */
+
+  onDisconnect() {
+    this.router.navigate(['/login']);
+  }
+
+
+  onCommand(cmd) {
+    console.log('sending command' + cmd);
+    this.peerService.sendData({
+      type : 'COMMAND',
+      command : cmd
+    });
+  }
+
+
   /** Peer service callbacks */
 
   onPeerServiceOpen(regName: String) {
     // the service usually is already open
+    this.isServerConnected = true;
+    this.changeDetector.detectChanges();
   }
 
 
   onPeerServiceDisconnected() {
-
+    this.isServerConnected = false;
+    this.router.navigate(['/login']);
   }
 
 
   onPeerServiceClosed() {
-
+    this.isServerConnected = false;
+    this.router.navigate(['/login']);
   }
 
 
   onPeerServiceError(errMsg: String) {
-    this.peerService.terminate();
+    this.isServerConnected = false;
     this.router.navigate(['/login']);
   }
 
@@ -66,22 +103,28 @@ export class ControlPanelComponent implements OnInit, OnDestroy,
   /** Data connection callbacks */
 
   onPeerDataConnectionOpen() {
-    this.isConnecting = false;
+    this.isDataConnected = true;
+    this.changeDetector.detectChanges();
     console.log('data connection started');
   }
 
 
   onPeerDataConnectionData(data: any) {
+
     console.log(data);
   }
 
 
   onPeerDataConnectionClose() {
+    this.isDataConnected = false;
+    this.changeDetector.detectChanges();
     console.log('data connection was closed');
   }
 
 
   onPeerDataConnectionError(err: any) {
+    this.isDataConnected = false;
+    this.changeDetector.detectChanges();
     console.log(err);
   }
 
@@ -89,24 +132,29 @@ export class ControlPanelComponent implements OnInit, OnDestroy,
   /** Media connection callbacks */
 
   onPeerMediaConnectionOpen(stream: any) {
-
+    this.isMediaConnected = true;
+    this.mediaStream = stream;
+    this.changeDetector.detectChanges();
+    console.log('media connection was open');
   }
 
 
   onPeerMediaConnectionClosed() {
+    this.isMediaConnected = false;
+    this.changeDetector.detectChanges();
     console.log('media connection was closed');
   }
 
 
   onPeerMediaConnectionError(err: any) {
+    this.isMediaConnected = false;
+    this.changeDetector.detectChanges();
     console.log(err);
   }
 
 
   ngOnDestroy(): void {
-    this.peerService.removeServiceListener();
-    this.peerService.removeDataConnectionListener();
-    this.peerService.removeMediaConnectionListener();
+    this.peerService.terminate();
   }
 
 }

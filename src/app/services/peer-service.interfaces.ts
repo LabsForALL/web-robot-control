@@ -17,3 +17,9 @@ export interface IPeerMediaConnectionListener {
     onPeerMediaConnectionClosed();
     onPeerMediaConnectionError(err: any);
 }
+
+
+export interface IPeerServerListeners extends IPeerMediaConnectionListener,
+  IPeerDataConnectionListener, IPeerServiceListener {
+
+}

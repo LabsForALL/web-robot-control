@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
-import { IPeerServiceListener, IPeerDataConnectionListener, IPeerMediaConnectionListener } from './peer-service.interfaces';
+import {
+  IPeerServiceListener, IPeerDataConnectionListener, IPeerMediaConnectionListener,
+  IPeerServerListeners
+} from './peer-service.interfaces';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
@@ -45,6 +48,13 @@ export class PeerService {
 
   removeMediaConnectionListener() {
     this.mediaConnectionListener = undefined;
+  }
+
+
+  setListener(listener: IPeerServerListeners){
+    this.setServiceListener(listener);
+    this.setMediaConnectionListener(listener);
+    this.setDataConnectionListener(listener);
   }
 
 
@@ -273,10 +283,10 @@ export class PeerService {
 
 
   terminate() {
-    this.destroyLocalPeer();
     this.removeServiceListener();
     this.removeDataConnectionListener();
     this.removeMediaConnectionListener();
+    this.destroyLocalPeer();
   }
 
 }

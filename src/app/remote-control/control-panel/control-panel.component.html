@@ -1,2 +1,35 @@
-<div class="loading" *ngIf="isConnecting" > connecting to {{remotePeerID}} </div>
-<div class="control-panel" *ngIf="!isConnecting" > Welcome to control panel </div>
+<div align="center" class="embed-responsive embed-responsive-16by9" *ngIf="isMediaConnected">
+  <video [srcObject]="mediaStream" autoplay class="embed-responsive-item"></video>
+</div>
+
+<table class="table borderless" *ngIf="isDataConnected">
+  <tbody>
+  <tr>
+    <td></td>
+    <td (click)="onCommand(Commands.moveForward)" >
+      <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td (click)="onCommand(Commands.turnLeft)" >
+      <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+    </td>
+    <td (click)="onCommand(Commands.stopMove)">
+      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+    </td>
+    <td (click)="onCommand(Commands.turnRight)">
+      <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td (click)="onCommand(Commands.moveBackward)">
+      <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+    </td>
+    <td></td>
+  </tr>
+  </tbody>
+</table>
+
+<button type="button" class="btn-block btn-default" (click)="onDisconnect()">Disconnect</button>
