@@ -241,7 +241,7 @@ export class PeerService {
         navigator.webkitGetUserMedia ||
         navigator.mozGetUserMedia;
 
-    navigator.getUserMedia({video: false, audio: true},
+    navigator.getUserMedia({video: true, audio: true},
       (stream) => {
 
         // Calling the other user with the local streams

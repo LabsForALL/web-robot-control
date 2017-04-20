@@ -10,7 +10,8 @@ import { AppComponent } from './app.component';
 import { RemoteControlComponent } from './remote-control/remote-control.component';
 import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { ControlPanelComponent } from './remote-control/control-panel/control-panel.component'
+import { ControlPanelComponent } from './remote-control/control-panel/control-panel.component';
+import { VideoDirective } from './remote-control/control-panel/video.directive';
 
 const appRoutes: Routes = [
   { path: 'remote-control/control-panel/:remote-id', component: ControlPanelComponent },
@@ -27,7 +28,8 @@ const appRoutes: Routes = [
     RemoteControlComponent,
     LoginComponent,
     PageNotFoundComponent,
-    ControlPanelComponent
+    ControlPanelComponent,
+    VideoDirective
   ],
   imports: [
     BrowserModule,
@@ -37,6 +39,6 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes)
   ],
   providers: [PeerService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

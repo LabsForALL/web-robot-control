@@ -1,16 +1,21 @@
-import {Component, OnInit, OnDestroy, ChangeDetectorRef} from '@angular/core';
+import {
+  Component, OnInit, OnDestroy, ChangeDetectorRef, ElementRef, Directive, Renderer,
+  ViewChild
+} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PeerService } from '../../services/peer.service';
-import { IPeerServiceListener, IPeerDataConnectionListener,
-  IPeerMediaConnectionListener } from '../../services/peer-service.interfaces';
+import { IPeerServiceListener, IPeerDataConnectionListener,IPeerMediaConnectionListener } from '../../services/peer-service.interfaces';
+import { VideoDirective } from './video.directive';
 
 @Component({
   selector: 'app-control-panel',
   templateUrl: './control-panel.component.html',
-  styleUrls: ['./control-panel.component.scss']
+  styleUrls: ['./control-panel.component.scss'],
 })
 export class ControlPanelComponent implements OnInit, OnDestroy,
  IPeerServiceListener, IPeerDataConnectionListener, IPeerMediaConnectionListener {
+
+  @ViewChild(VideoDirective) videoDirective; // First
 
   Commands = {
     moveForward : 'f',
@@ -25,7 +30,6 @@ export class ControlPanelComponent implements OnInit, OnDestroy,
   isDataConnected: boolean;
   isMediaConnected: boolean;
 
-  mediaStream: any = undefined;
   remotePeerID: any = '';
 
   constructor(
@@ -133,8 +137,9 @@ export class ControlPanelComponent implements OnInit, OnDestroy,
 
   onPeerMediaConnectionOpen(stream: any) {
     this.isMediaConnected = true;
-    this.mediaStream = stream;
     this.changeDetector.detectChanges();
+
+    this.videoDirective.setVideoStream(stream);
     console.log('media connection was open');
   }
 
