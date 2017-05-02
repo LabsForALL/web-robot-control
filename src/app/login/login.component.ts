@@ -12,15 +12,15 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(private router: Router) { }
 
   ngOnInit() {
-    console.log("Login component created");
+    console.log('Login component created');
   }
 
   ngOnDestroy() {
-    console.log("Login component destroyed");
+    console.log('Login component destroyed');
   }
 
-  onConnect(usrname){
-    //TODO: add some validation checks
+  onConnect(usrname) {
+    // TODO: add some validation checks
     this.router.navigate(['/remote-control', usrname]);
   }
 

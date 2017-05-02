@@ -4,7 +4,7 @@ import {
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PeerService } from '../../services/peer.service';
-import { IPeerServiceListener, IPeerDataConnectionListener,IPeerMediaConnectionListener } from '../../services/peer-service.interfaces';
+import { IPeerServiceListener, IPeerDataConnectionListener, IPeerMediaConnectionListener } from '../../services/peer-service.interfaces';
 import { VideoDirective } from './video.directive';
 
 @Component({

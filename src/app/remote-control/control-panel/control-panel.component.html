@@ -1,34 +1,37 @@
-<video appVideo autoplay class="embed-responsive-item" src="" ></video>
+
+<button type="button" class="btn btn-lg btn-block  btn-primary " (click)="onDisconnect()">Disconnect</button>
+
+<div class="controls">
+  <video appVideo autoplay class="embed-responsive-item central" src="" ></video>
 
 
-<table class="table borderless" *ngIf="isDataConnected">
-  <tbody>
-  <tr>
-    <td></td>
-    <td (click)="onCommand(Commands.moveForward)" >
-      <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
-    </td>
-    <td></td>
-  </tr>
-  <tr>
-    <td (click)="onCommand(Commands.turnLeft)" >
-      <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
-    </td>
-    <td (click)="onCommand(Commands.stopMove)">
-      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-    </td>
-    <td (click)="onCommand(Commands.turnRight)">
-      <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td (click)="onCommand(Commands.moveBackward)">
-      <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
-    </td>
-    <td></td>
-  </tr>
-  </tbody>
-</table>
-
-<button type="button" class="btn-block btn-default" (click)="onDisconnect()">Disconnect</button>
+  <table class="table borderless" *ngIf="isDataConnected">
+    <tbody class="central">
+    <tr>
+      <td></td>
+      <td (click)="onCommand(Commands.moveForward)" >
+        <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+      </td>
+      <td></td>
+    </tr>
+    <tr>
+      <td (click)="onCommand(Commands.turnLeft)" >
+        <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+      </td>
+      <td (click)="onCommand(Commands.stopMove)">
+        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+      </td>
+      <td (click)="onCommand(Commands.turnRight)">
+        <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td (click)="onCommand(Commands.moveBackward)">
+        <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+      </td>
+      <td></td>
+    </tr>
+    </tbody>
+  </table>
+</div>

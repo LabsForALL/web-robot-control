@@ -1,3 +1,25 @@
+
+app-control-panel {
+  padding: 16px;
+}
+
 .borderless td, .borderless th {
   border: none;
 }
+
+.central {
+  display: table;
+  margin: 0 auto;
+  color: white;
+}
+
+.btn-block {
+  border: none;
+  color: darkred;
+  background-color: rgba(0,0,0,0.3);
+  max-width: 240px;
+  margin: auto;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+

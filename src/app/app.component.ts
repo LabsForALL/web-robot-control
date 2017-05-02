@@ -9,13 +9,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor () { }
 
-  ngOnInit(){
+  ngOnInit() {
     // checking browser support for webrtc
-    console.log("app started");
+    console.log('app started');
   }
 
-  ngOnDestroy(){
-    console.log("appcomp destroyed");
+  ngOnDestroy() {
+    console.log('appcomp destroyed');
   }
 
 }
