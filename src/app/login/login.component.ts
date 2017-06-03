@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Component, OnInit, OnDestroy, HostListener} from '@angular/core';
 import { Router } from '@angular/router';
 
 
@@ -11,8 +11,13 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(private router: Router) { }
 
+
   ngOnInit() {
     console.log('Login component created');
+    /*setInterval(() => {
+      console.log(this.state);
+    }, 1000);*/
+
   }
 
   ngOnDestroy() {

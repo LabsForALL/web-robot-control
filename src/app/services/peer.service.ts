@@ -74,7 +74,7 @@ export class PeerService {
       secure: 1
     });
 
-   /* this.http.post('https://service.xirsys.com/ice', body, headers)
+    this.http.post('https://service.xirsys.com/ice', body, headers)
     .map(res => res.json())
     .toPromise()
     .then(
@@ -85,9 +85,8 @@ export class PeerService {
       err => {
         this.serviceListener.onPeerServiceError('XirSys connection failed');
       }
-    );*/
+    );
 
-    this.createLocalPeer(usrName, 0);
   }
 
 
@@ -95,8 +94,8 @@ export class PeerService {
 
     this.localPeer = new Peer(name, {
               key : 'mme0buekacrkvs4i',
-              debug: 3
-              // config: data
+              debug: 3,
+              config: data
     });
 
     this.localPeer.on('open',

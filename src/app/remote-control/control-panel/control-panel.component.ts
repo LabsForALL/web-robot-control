@@ -1,6 +1,6 @@
 import {
   Component, OnInit, OnDestroy, ChangeDetectorRef, ElementRef, Directive, Renderer,
-  ViewChild
+  ViewChild, HostListener
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PeerService } from '../../services/peer.service';
@@ -17,13 +17,23 @@ export class ControlPanelComponent implements OnInit, OnDestroy,
 
   @ViewChild(VideoDirective) videoDirective; // First
 
+  state = {
+    isMovingForward : false,
+    isMovingBackward : false,
+    isTurningLeft : false,
+    isTurningRight : false
+  };
+
+
   Commands = {
     moveForward : 'f',
     moveBackward : 'b',
     stopMove : 's',
+    turnCenter: 'c',
     turnLeft : 'l',
     turnRight : 'r'
   };
+
 
   // WebRTC states
   isServerConnected: boolean;
@@ -39,6 +49,8 @@ export class ControlPanelComponent implements OnInit, OnDestroy,
     private peerService: PeerService
   ) { }
 
+
+  /** Lifecycle callbacks */
 
   ngOnInit() {
 
@@ -61,6 +73,11 @@ export class ControlPanelComponent implements OnInit, OnDestroy,
   }
 
 
+  ngOnDestroy(): void {
+    this.peerService.terminate();
+  }
+
+
   /** Buttons callbacks */
 
   onDisconnect() {
@@ -69,6 +86,73 @@ export class ControlPanelComponent implements OnInit, OnDestroy,
 
 
   onCommand(cmd) {
+    console.log(cmd);
+  }
+
+
+  @HostListener('window:keydown', ['$event'])
+  keyboardInput(event: KeyboardEvent) {
+    switch (event.code) {
+
+      case 'ArrowUp' :
+        if (this.state.isMovingForward) break;
+        this.state.isMovingForward = true;
+        this.sendCommand(this.Commands.moveForward);
+        break;
+
+      case 'ArrowDown' :
+        if (this.state.isMovingBackward) break;
+        this.state.isMovingBackward = true;
+        this.sendCommand(this.Commands.moveBackward);
+        break;
+
+      case 'ArrowLeft' :
+        if (this.state.isTurningLeft) break;
+        this.state.isTurningLeft = true;
+        this.sendCommand(this.Commands.turnLeft);
+        break;
+
+      case 'ArrowRight' :
+        if (this.state.isTurningRight) break;
+        this.state.isTurningRight = true;
+        this.sendCommand(this.Commands.turnRight);
+        break;
+    }
+  }
+
+
+  @HostListener('window:keyup', ['$event'])
+  keyboardInput2(event: KeyboardEvent) {
+    switch (event.code) {
+
+      case 'ArrowUp' :
+        if (!this.state.isMovingForward) break;
+        this.state.isMovingForward = false;
+        this.sendCommand(this.Commands.stopMove);
+        break;
+
+      case 'ArrowDown' :
+        if (!this.state.isMovingBackward) break;
+        this.state.isMovingBackward = false;
+        this.sendCommand(this.Commands.stopMove);
+        break;
+
+      case 'ArrowLeft' :
+        if (!this.state.isTurningLeft) break;
+        this.state.isTurningLeft = false;
+        this.sendCommand(this.Commands.turnCenter);
+        break;
+
+      case 'ArrowRight' :
+        if (!this.state.isTurningRight) break;
+        this.state.isTurningRight = false;
+        this.sendCommand(this.Commands.turnCenter);
+        break;
+    }
+  }
+
+
+  sendCommand(cmd) {
     console.log('sending command' + cmd);
     this.peerService.sendData({
       type : 'COMMAND',
@@ -114,7 +198,6 @@ export class ControlPanelComponent implements OnInit, OnDestroy,
 
 
   onPeerDataConnectionData(data: any) {
-
     console.log(data);
   }
 
@@ -155,11 +238,6 @@ export class ControlPanelComponent implements OnInit, OnDestroy,
     this.isMediaConnected = false;
     this.changeDetector.detectChanges();
     console.log(err);
-  }
-
-
-  ngOnDestroy(): void {
-    this.peerService.terminate();
   }
 
 }
